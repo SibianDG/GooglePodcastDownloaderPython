@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 import re
 
 # link = input('Give your link to download podcasts: ')
-link = 'https://podcasts.google.com/feed/aHR0cHM6Ly9yc3MuYXJ0MTkuY29tL2RlLXVuaXZlcnNpdGVpdC12YW4tdmxhYW5kZXJlbi1wb2RjYXN0?sa=X&ved=2ahUKEwjen_ys_9PyAhVOh_0HHfAtDKgQ9sEGegQIARAC'
+link = 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5zb3VuZGNsb3VkLmNvbS91c2Vycy9zb3VuZGNsb3VkOnVzZXJzOjQ3MzQ4NjczOS9zb3VuZHMucnNz'
 episodes = {}
 options = Options()
 options.page_load_strategy = 'eager'
@@ -19,9 +19,10 @@ try:
         for t in tempEl[0].find_elements_by_tag_name('div'):
             if t.get_attribute('jsdata'):
                 jsdata = t.get_attribute('jsdata')
-                match = re.search("https[^?]+\.mp3", jsdata)
+                print(jsdata)
+                match = re.search("https://[^;]+\.mp3|http://www\.podtrac\.com/pts/redirect\.mp3/[^;]+\.mp3", jsdata)
                 episodes[title] = match.group()
-                print('added')
+                print('added: ' + episodes[title])
 finally:
     driver.quit()
     print(episodes)
