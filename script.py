@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import re
+import urllib.request
 
 # link = input('Give your link to download podcasts: ')
 link = 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5jYXB0aXZhdGUuZm0vc2xpbW1lci1wcmVzdGVyZW4v?sa=X&ved=2ahUKEwjF6dC52tn1AhWKg_0HHcaBCzgQ9sEGegQIARAE'
@@ -21,7 +22,8 @@ try:
         for t in tempEl[0].find_elements_by_tag_name('div'):
             if t.get_attribute('jsdata'):
                 jsdata = t.get_attribute('jsdata')
-                link = re.search("https://[^;]+\.mp3|http://www\.podtrac\.com/pts/redirect\.mp3/[^;]+\.mp3", jsdata).group()
+                link = re.search("https://[^;]+\.mp3|http://www\.podtrac\.com/pts/redirect\.mp3/[^;]+\.mp3",
+                                 jsdata).group()
                 filename = re.search("[^/]+\.mp3", jsdata).group()
                 episodes[title] = link
                 filenames[filename] = link
@@ -29,11 +31,25 @@ try:
 finally:
     driver.quit()
 
-    print("Title -> link")
-    for key, value in episodes.items():
-        print(f"{key} -> {value}")
+    if len(filenames) > 0:
 
-    print("\n\nFilename -> link")
-    for key, value in filenames.items():
-        print(f"{key} -> {value}")
+        print("Title -> link")
+        index = 0
+        for key, value in episodes.items():
+            print(f"{index}: {key} -> {value}")
+            index += 1
+
+        print("\n\nFilename -> link")
+        index = 0
+        for key, value in filenames.items():
+            print(f"{index}: {key} -> {value}")
+            index += 1
+
+        word = ""
+        while word.lower() != "stop":
+            number = input("Number you want to download: ")
+            if word.lower() != "stop":
+                link = list(filenames.values())[int(number)]
+                name = list(filenames)[int(number)]
+                urllib.request.urlretrieve(link, name)
 
