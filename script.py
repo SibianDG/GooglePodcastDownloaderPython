@@ -4,8 +4,8 @@ from selenium.webdriver.common.by import By
 import re
 import urllib.request
 
-# link = input('Give your link to download podcasts: ')
-link = 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5jYXB0aXZhdGUuZm0vc2xpbW1lci1wcmVzdGVyZW4v?sa=X&ved=2ahUKEwjF6dC52tn1AhWKg_0HHcaBCzgQ9sEGegQIARAE'
+link = input('Give your link to download podcasts: ')
+# link = 'https://podcasts.google.com/feed/aHR0cHM6Ly9mZWVkcy5jYXB0aXZhdGUuZm0vc2xpbW1lci1wcmVzdGVyZW4v?sa=X&ved=2ahUKEwjF6dC52tn1AhWKg_0HHcaBCzgQ9sEGegQIARAE'
 episodes = {}
 filenames = {}
 options = Options()
@@ -45,11 +45,25 @@ finally:
             print(f"{index}: {key} -> {value}")
             index += 1
 
-        word = ""
-        while word.lower() != "stop":
-            number = input("Number you want to download: ")
-            if word.lower() != "stop":
+        type_var = ""
+        index = 0
+        while type_var.lower() != "single" and type_var.lower() != "all":
+            type_var = input("Input download type 'single' to downlad one file or 'all' to download all ({}) files: ".format(len(list(filenames))))
+        print("### type_var:{}".format(type_var))
+
+        if type_var == 'all':
+            for listel in list(filenames):
+                print ("### {} Download file with name: {}".format(index,listel))
+                index += 1
+                link = list(filenames.values())[int(index)]
+                urllib.request.urlretrieve(link, listel)
+        elif type_var == 'single':
+            number = ''
+            while number.lower() != "stop":
+                number = input("Input number you want to download or stop to interrupt: ")
+                if number.lower() == "stop":
+                    break
                 link = list(filenames.values())[int(number)]
                 name = list(filenames)[int(number)]
+                print ("### Download file #{} with name: {}".format(number,name))
                 urllib.request.urlretrieve(link, name)
-
